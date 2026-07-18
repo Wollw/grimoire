@@ -623,6 +623,7 @@ version = "0.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "950238d3049d81006a6fd6b898a34cfc01bb5462a7668795a54d640aed19fd0a"
 dependencies = [
+ "bevy_dylib",
  "bevy_internal",
 ]
 
@@ -952,6 +953,15 @@ dependencies = [
  "log",
  "serde",
  "sysinfo",
+]
+
+[[package]]
+name = "bevy_dylib"
+version = "0.19.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "70547c664f17a903cdef1e8e673496e9bdfa3d69dece9c01523d79067a876e34"
+dependencies = [
+ "bevy_internal",
 ]
 
 [[package]]
@@ -1477,6 +1487,15 @@ name = "bevy_mikktspace"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bff34eb29ff4b8a8688bc7299f14fb6b597461ca80fec03ed7d22939ab33e48f"
+
+[[package]]
+name = "bevy_pancam"
+version = "0.21.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9c9fdc31b063621c0afed16beac6dda0a785d7634a3daa3d57a33cb460ab19c"
+dependencies = [
+ "bevy",
+]
 
 [[package]]
 name = "bevy_pbr"
@@ -3457,6 +3476,7 @@ dependencies = [
  "async-channel",
  "bevy",
  "bevy_egui",
+ "bevy_pancam",
  "boolenum",
  "egui",
  "env_logger",

@@ -221,3 +221,168 @@ cargo run
 cargo run
 cargo run
 cargo run
+cargo run
+cargo run
+cargo run
+cargo run
+cargo run
+cargo run
+cargo run
+cargo run
+cargo run
+cargo run
+RUST_BACKTRACE=1 cargo run
+cargo run
+cargo run
+curl -d '{"cmd":"foo","params":{}}' localhost:4875
+curl -d '{"cmd":"foo","params":{}}' localhost:4875
+curl -d '{"cmd":"foo","params":{}}' localhost:4875
+curl -d '{"cmd":"foo","params":{}}' localhost:4875
+cargo run
+cargo run dev
+cargo add bevy -F dynamic_linking
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+npm add bevy_pancam
+cargo dd bevy_pancam
+cargo add bevy_pancam
+cargo add bevy_pancam
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo add bevy_dragndrop
+cargo add bevy_dragndrop
+cargo add bevy_dragndrop
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+[A
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+curl -d '{"cmd":"foo","params":{}}' localhost:4875
+curl -d '{"cmd":"foo","params":{"bar":123}}' localhost:4875
+cargo run dev
+curl -d '{"cmd":"foo","params":{"bar":123}}' localhost:4875
+curl -d '{"cmd":"foo","params":{"bar":123}}' localhost:4875
+cargo run dev
+curl -d '{"cmd":"foo","params":{"bar":123}}' localhost:4875
+curl -d '{"cmd":"foo","params":{"bar":123}}' localhost:4875
+curl -d '{"cmd":"foo","params":{"bar":"123"}}' localhost:4875
+cargo run dev
+curl -d '{"cmd":"foo","params":{"bar":123}}' localhost:4875
+cargo run dev
+curl -d '{"cmd":"Circle","params":{"x":40,"y":20}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":"40","y":"20"}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":40,"y":20}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":40.0,"y":20.0}}' localhost:4875
+cargo run dev
+curl -d '{"cmd":"Circle","params":{"x":40.0,"y":20.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":40.0,"y":20.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":20.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-20.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-200.0}}' localhost:4875
+cargo run dev

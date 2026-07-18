@@ -1,13 +1,20 @@
-mod handler;
+pub mod handler;
 use actix_web::dev::ServerHandle;
-use handler::*;
+pub use handler::*;
+
+pub use crate::handler::*;
+
+use std::{
+    collections::{HashMap, VecDeque},
+    ops::Deref,
+};
 
 use actix_web::{App, HttpServer, middleware, web};
 use async_channel::{Receiver, Sender};
 use bevy::prelude::*;
 use bevy::tasks::*;
 use parking_lot::Mutex;
-use std::collections::VecDeque;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
 pub enum ServerState {
@@ -22,24 +29,7 @@ pub struct NetChannels {
     pub rx: Receiver<NetCommand>,
 }
 
-#[derive(Resource)]
-pub struct NetChannelsReverse {
-    pub tx: Sender<NetCommand>,
-    pub rx: Receiver<ServerState>,
-}
-
-pub fn handle_actix_rx(channels: Option<Res<NetChannels>>) {
-    match channels {
-        None => return,
-        Some(channels) => {
-            while let Ok(msg) = channels.rx.try_recv() {
-                info!("Got JSON: {:?}", msg);
-            }
-        }
-    }
-}
-
-pub fn handle_stop_actix(channels: Res<NetChannels>) {
+pub fn stop_actix(channels: Res<NetChannels>) {
     info!("Sending Stop");
     if let Err(e) = channels.tx.try_send(ServerState::StopServer) {
         error!("in stop_actix: {:?}", e)
