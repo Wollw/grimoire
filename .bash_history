@@ -386,3 +386,93 @@ curl -d '{"cmd":"Circle","params":{"x":400.0,"y":20.0}}' localhost:4875
 curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-20.0}}' localhost:4875
 curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-200.0}}' localhost:4875
 cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo check
+cargo check
+cargo build
+cargo check
+cargo check
+cargo check
+cargo check
+cargo check
+cargo check
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+[A
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+cargo run dev
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-200.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-200.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-200.0}}' localhost:4875
+cargo run dev
+cargo run dev
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-200.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-200.0}}' localhost:4875
+cargo run dev
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-200.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-200.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-200.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"x":400.0,"y":-200.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{name:"buz","x":400.0,"y":-200.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"name":"buz","x":400.0,"y":-200.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"name":"buz","x":400.0,"y":-200.0}}' localhost:4875
+cargo run dev
+cargo run dev
+curl -d '{"cmd":"Circle","params":{"name":"buz","x":400.0,"y":-200.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"name":"baz","x":400.0,"y":-200.0}}' localhost:4875
+curl -d '{"cmd":"Circle","params":{"name":"asdf","x":400.0,"y":-200.0}}' localhost:4875
+cargo run dev

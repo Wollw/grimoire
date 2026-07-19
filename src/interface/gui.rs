@@ -1,4 +1,8 @@
-use crate::{interface::toolbox::*, server::ServerState};
+use crate::{
+    grimoire::{GrimoireObject, GrimoireObjectProps},
+    interface::toolbox::*,
+    server::ServerState,
+};
 use bevy::prelude::*;
 use bevy_egui::{
     EguiContexts, EguiPlugin, EguiPrimaryContextPass,
@@ -32,6 +36,7 @@ pub fn gui_system(
     mut toolbox: ResMut<Toolbox>,
     mut commands: Commands,
     server_state: Res<State<ServerState>>,
+    grim_objs: Query<&GrimoireObject>,
 ) -> Result {
     let ctx = egui_contexts.ctx_mut()?;
     let mut viewport_ui = Ui::new(
@@ -52,11 +57,10 @@ pub fn gui_system(
                     ServerState::RunServer => commands.set_state(ServerState::StopServer),
                 }
             }
+            for grim_obj in &grim_objs {
+                ui.label(&grim_obj.name);
+            }
         });
-    /*
-    egui::CentralPanel::default().show(&mut viewport_ui, |ui| {
-        if ui.toggle_value(&mut gui.toolbox_open, "Panel").clicked() {}
-    });
-    */
+
     Ok(())
 }
