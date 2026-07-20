@@ -1,7 +1,7 @@
 use crate::{
+    //actix_plugin::ServerState,
     grimoire::{GrimoireObject, GrimoireObjectProps},
-    interface::toolbox::*,
-    server::ServerState,
+    interface_plugin::toolbox::*,
 };
 use bevy::prelude::*;
 use bevy_egui::{
@@ -35,8 +35,8 @@ pub fn gui_system(
     mut gui: ResMut<Gui>,
     mut toolbox: ResMut<Toolbox>,
     mut commands: Commands,
-    server_state: Res<State<ServerState>>,
-    grim_objs: Query<&GrimoireObject>,
+    //server_state: Res<State<ServerState>>,
+    grim_obj_props: Query<&GrimoireObjectProps>,
 ) -> Result {
     let ctx = egui_contexts.ctx_mut()?;
     let mut viewport_ui = Ui::new(
@@ -50,16 +50,17 @@ pub fn gui_system(
     egui::Panel::left("left_panel")
         .resizable(true)
         .show_collapsible(&mut viewport_ui, &mut gui.toolbox_open, |ui| {
-            let mut b = *server_state == ServerState::RunServer;
-            if ui.toggle_value(&mut b, "Server").clicked() {
-                match server_state.get() {
-                    ServerState::StopServer => commands.set_state(ServerState::RunServer),
-                    ServerState::RunServer => commands.set_state(ServerState::StopServer),
-                }
-            }
-            for grim_obj in &grim_objs {
-                ui.label(&grim_obj.name);
-            }
+            //let mut b = *server_state == ServerState::RunServer;
+            //if ui.toggle_value(&mut b, "Server").clicked() {
+            //    match server_state.get() {
+            //        ServerState::StopServer => commands.set_state(ServerState::RunServer),
+            //        ServerState::RunServer => commands.set_state(ServerState::StopServer),
+            //    }
+            //}
+            grim_obj_props.iter().for_each(|g_obj| {
+                let n = g_obj.name.clone();
+                ui.label(g_obj.name.clone());
+            });
         });
 
     Ok(())

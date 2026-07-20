@@ -1,5 +1,5 @@
-use crate::interface::gui::GuiPlugin;
-use crate::interface::toolbox::Toolbox;
+use crate::interface_plugin::gui::GuiPlugin;
+use crate::interface_plugin::toolbox::Toolbox;
 use bevy::prelude::*;
 
 mod gui;
