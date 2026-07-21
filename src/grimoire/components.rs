@@ -1,22 +1,9 @@
-use std::collections::VecDeque;
+use crate::grimoire;
+use bevy::{color::palettes::basic::*, prelude::*};
+use serde::{Deserialize, Deserializer, Serialize};
 
-use crate::CursorWorldPos;
-use bevy::color::palettes::css::*;
-use bevy::dev_tools::infinite_grid::*;
-use bevy::pbr::StandardMaterialUniform;
-use bevy::prelude::*;
-use bevy::reflect::array::Array;
-use bevy::sprite_render::*;
-use bevy_color;
-use bevy_pancam::*;
-use bevy_prototype_lyon::prelude::tess::geom::arrayvec::ArrayVec;
-use bevy_prototype_lyon::prelude::tess::path::Position;
-use bevy_scene::prelude::*;
-use bevy_scene::{ResolveContext, ResolveSceneError, ResolvedScene};
-use serde;
-use serde::Deserialize;
-use serde::Deserializer;
-use serde::Serialize;
+#[derive(Component, Debug, Clone, Default)]
+struct NowDrawing;
 
 #[derive(Clone, Default, Component, Debug)]
 pub struct GrimoireVisible;
@@ -156,7 +143,7 @@ impl Default for GrimoireColor {
 
 pub fn grimoire_drag(
     drag: On<Pointer<Drag>>,
-    world_pos: Res<CursorWorldPos>,
+    world_pos: Res<grimoire::CursorWorldPos>,
     mut query: Query<&mut GrimoirePosition, With<GrimoireDraggable>>,
 ) {
     if let Ok(mut position) = query.get_mut(drag.entity) {

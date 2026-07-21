@@ -1,9 +1,7 @@
-use crate::grimoire::GrimoireObjectProps;
-use crate::interface_plugin::toolbox;
 use crate::{
     //actix_plugin::ServerState,
-    grimoire::GrimoireObject,
-    interface_plugin::toolbox::*,
+    grimoire::components::GrimoireObject,
+    ui::toolbox::*,
 };
 use bevy::prelude::*;
 use bevy_egui::{
@@ -58,7 +56,7 @@ pub fn gui_system(
             //        ServerState::RunServer => commands.set_state(ServerState::StopServer),
             //    }
             //}
-            toolbox::draw_toolbox(toolbox, ui);
+            draw_toolbox(toolbox, ui);
             query.iter().for_each(|(_, n)| {
                 ui.label(n.as_str().to_string());
             });
