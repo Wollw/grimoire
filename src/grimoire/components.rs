@@ -82,7 +82,10 @@ impl GrimoireObject {
             GrimoireShape::ident(props.shape)
             GrimoirePosition::new(props.position.x,props.position.y)
             GrimoireColor::new(props.color)
+            GrimoireRedraw::new(true)
             on(grimoire_drag)
+            on(|_event:On<Pointer<Over>>, mut ooo:ResMut<IsOverOrOut> | {*ooo = IsOverOrOut::Over})
+            on(|_event:On<Pointer<Out>>, mut ooo:ResMut<IsOverOrOut> | {*ooo = IsOverOrOut::Out})
         }
     }
 }
@@ -126,6 +129,15 @@ impl Default for GrimoirePosition {
     }
 }
 
+#[derive(Debug, Clone, Default, Component)]
+pub struct GrimoireRedraw(pub bool);
+
+impl GrimoireRedraw {
+    pub fn new(b: bool) -> Self {
+        Self(b)
+    }
+}
+
 #[derive(Debug, Deserialize, Serialize, Clone, Component)]
 pub struct GrimoireColor(pub Color);
 
@@ -144,12 +156,21 @@ impl Default for GrimoireColor {
 pub fn grimoire_drag(
     drag: On<Pointer<Drag>>,
     world_pos: Res<grimoire::CursorWorldPos>,
-    mut query: Query<&mut GrimoirePosition, With<GrimoireDraggable>>,
+    mut query: Query<(&mut GrimoirePosition, &Name), With<GrimoireDraggable>>,
 ) {
-    if let Ok(mut position) = query.get_mut(drag.entity) {
+    if drag.button != PointerButton::Primary {
+        return;
+    }
+    if let Ok((mut position, name)) = query.get_mut(drag.entity) {
         if let Some(world_pos) = world_pos.0 {
             position.x = world_pos.x;
             position.y = world_pos.y;
         }
     }
+}
+
+#[derive(PartialEq, Eq, Debug, Resource)]
+pub enum IsOverOrOut {
+    Over,
+    Out,
 }

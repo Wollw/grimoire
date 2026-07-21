@@ -38,7 +38,7 @@ fn main() {
         .add_plugins(HyperPlugin::default())
         .add_systems(Startup, setup)
         .add_systems(Update, get_cursor_world_pos)
-        .add_systems(Update, draw::grimoire_draw)
+        .add_systems(Update, render::grimoire_draw)
         .add_observer(parse_json::spawn_hyper_scene)
         .run();
 }
@@ -58,13 +58,12 @@ fn setup(mut commands: Commands) {
         @GrimoireObject {
             @name: "bar",
             @color: WHITE,
-            @position: Vec3::new(-100.,50.,0.),
+            @position: Vec3::new(-100.,50.,-1.),
         },
         @GrimoireObject {
             @name: "baz",
-            @position: Vec3::new(100.,0.,0.),
+            @position: Vec3::new(100.,0.,1.),
         }
-        on(|event:On<Pointer<Over>>| info!("Over"))
 
     });
 }

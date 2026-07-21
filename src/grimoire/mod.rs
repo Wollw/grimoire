@@ -19,6 +19,7 @@ pub use crate::components::*;
 pub mod components;
 pub mod draw;
 pub mod parse_json;
+pub mod render;
 
 pub struct GrimoirePlugin;
 
@@ -27,7 +28,9 @@ pub struct CursorWorldPos(pub Option<Vec2>);
 
 impl Plugin for GrimoirePlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(draw::MeshHandleRes(None))
-            .insert_resource(CursorWorldPos(None));
+        app.insert_resource(render::MeshHandleRes(None))
+            .insert_resource(CursorWorldPos(None))
+            .insert_resource(IsOverOrOut::Out)
+            .add_observer(draw::draw_new_shape);
     }
 }

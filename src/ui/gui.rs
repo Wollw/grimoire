@@ -1,6 +1,6 @@
 use crate::{
     //actix_plugin::ServerState,
-    grimoire::components::GrimoireObject,
+    grimoire::components::{GrimoireObject, GrimoireRedraw, GrimoireShape},
     ui::toolbox::*,
 };
 use bevy::prelude::*;
@@ -8,7 +8,7 @@ use bevy_egui::{
     EguiContexts, EguiPlugin, EguiPrimaryContextPass,
     egui::{self, Frame, Layout, Ui},
 };
-use egui::{LayerId, UiBuilder};
+use egui::{CollapsingResponse, LayerId, UiBuilder};
 
 pub struct GuiPlugin;
 
@@ -35,7 +35,12 @@ pub fn gui_system(
     mut gui: ResMut<Gui>,
     mut toolbox: ResMut<Toolbox>,
     //server_state: Res<State<ServerState>>,
-    query: Query<(&GrimoireObject, &Name)>,
+    mut query: Query<(
+        &GrimoireObject,
+        &mut Name,
+        &mut GrimoireShape,
+        &mut GrimoireRedraw,
+    )>,
 ) -> Result {
     let ctx = egui_contexts.ctx_mut()?;
     let mut viewport_ui = Ui::new(
@@ -46,21 +51,22 @@ pub fn gui_system(
             .max_rect(ctx.viewport_rect()),
     );
 
-    egui::Panel::left("left_panel")
-        .resizable(true)
-        .show_collapsible(&mut viewport_ui, &mut gui.toolbox_open, |ui| {
-            //let mut b = *server_state == ServerState::RunServer;
-            //if ui.toggle_value(&mut b, "Server").clicked() {
-            //    match server_state.get() {
-            //        ServerState::StopServer => commands.set_state(ServerState::RunServer),
-            //        ServerState::RunServer => commands.set_state(ServerState::StopServer),
-            //    }
-            //}
+    gui.toolbox_open = egui::CollapsingHeader::new("Toolbox")
+        .show_background(true)
+        .show(&mut viewport_ui, |ui| {
             draw_toolbox(toolbox, ui);
-            query.iter().for_each(|(_, n)| {
-                ui.label(n.as_str().to_string());
-            });
-        });
+            for (_, mut n, mut shape, mut redraw) in query {
+                let mut name = String::from(n.as_str());
+                egui::CollapsingHeader::new(n.as_str())
+                    .default_open(true)
+                    .show(ui, |ui| {
+                        ui.add(egui::TextEdit::singleline(&mut name));
+                        *shape = shape_change(ui, shape.clone(), &mut redraw)
+                    });
+                n.set(name);
+            }
+        })
+        .fully_open();
 
     Ok(())
 }
