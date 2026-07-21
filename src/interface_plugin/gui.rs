@@ -1,6 +1,8 @@
+use crate::grimoire::GrimoireObjectProps;
+use crate::interface_plugin::toolbox;
 use crate::{
     //actix_plugin::ServerState,
-    grimoire::{GrimoireObject, GrimoireObjectProps},
+    grimoire::GrimoireObject,
     interface_plugin::toolbox::*,
 };
 use bevy::prelude::*;
@@ -34,9 +36,8 @@ pub fn gui_system(
     mut camera: Query<&mut Transform, With<Camera>>,
     mut gui: ResMut<Gui>,
     mut toolbox: ResMut<Toolbox>,
-    mut commands: Commands,
     //server_state: Res<State<ServerState>>,
-    grim_obj_props: Query<&GrimoireObjectProps>,
+    query: Query<(&GrimoireObject, &Name)>,
 ) -> Result {
     let ctx = egui_contexts.ctx_mut()?;
     let mut viewport_ui = Ui::new(
@@ -57,9 +58,9 @@ pub fn gui_system(
             //        ServerState::RunServer => commands.set_state(ServerState::StopServer),
             //    }
             //}
-            grim_obj_props.iter().for_each(|g_obj| {
-                let n = g_obj.name.clone();
-                ui.label(g_obj.name.clone());
+            toolbox::draw_toolbox(toolbox, ui);
+            query.iter().for_each(|(_, n)| {
+                ui.label(n.as_str().to_string());
             });
         });
 

@@ -1,14 +1,28 @@
-use crate::drag_plugin::*;
+use std::collections::VecDeque;
+
+use crate::CursorWorldPos;
+use bevy::color::palettes::css::*;
 use bevy::dev_tools::infinite_grid::*;
 use bevy::pbr::StandardMaterialUniform;
 use bevy::prelude::*;
+use bevy::reflect::array::Array;
 use bevy::sprite_render::*;
 use bevy_color;
 use bevy_pancam::*;
+use bevy_prototype_lyon::prelude::tess::geom::arrayvec::ArrayVec;
+use bevy_prototype_lyon::prelude::tess::path::Position;
+use bevy_scene::prelude::*;
+use bevy_scene::{ResolveContext, ResolveSceneError, ResolvedScene};
 use serde;
 use serde::Deserialize;
 use serde::Deserializer;
 use serde::Serialize;
+
+#[derive(Clone, Default, Component, Debug)]
+pub struct GrimoireVisible;
+
+#[derive(Clone, Default, Component, Debug)]
+pub struct GrimoireDraggable;
 
 #[derive(Debug, Clone, Default, SceneComponent)]
 #[scene(GrimoireSceneProps)]
@@ -48,26 +62,26 @@ where
     ))
 }
 
-#[derive(Debug, Clone, Default, SceneComponent)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, SceneComponent)]
 #[scene(GrimoireObjectProps)]
-#[derive(Reflect)]
-#[reflect(Component, Clone, Default)]
 pub struct GrimoireObject;
-#[derive(Debug, Clone, Component, Deserialize, Serialize)]
+
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GrimoireObjectProps {
     pub name: String,
     #[serde(deserialize_with = "deserialize_color")]
     pub color: Color,
     pub position: Vec3,
-    pub size: f32,
+    pub shape: GrimoireShape,
 }
+
 impl Default for GrimoireObjectProps {
     fn default() -> Self {
         Self {
             name: "".to_string(),
-            color: Color::WHITE,
+            color: YELLOW.into(),
             position: Vec3::new(0., 0., 0.),
-            size: 50.,
+            shape: GrimoireShape::Circle { radius: 25. },
         }
     }
 }
@@ -75,16 +89,80 @@ impl Default for GrimoireObjectProps {
 impl GrimoireObject {
     pub fn scene(props: GrimoireObjectProps) -> impl Scene {
         bsn! {
-            GrimoireObjectProps {
-                name: {props.name},
-                color: {props.color},
-                position: {props.position},
-                size: {props.size}
-            }
-            MeshMaterial2d::<ColorMaterial>(asset_value(props.color))
-            Transform::from_translation(props.position)
+            Name::new(props.name)
             Pickable
-            Draggable
+            GrimoireDraggable
+            GrimoireShape::ident(props.shape)
+            GrimoirePosition::new(props.position.x,props.position.y)
+            GrimoireColor::new(props.color)
+            on(grimoire_drag)
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, Component)]
+pub enum GrimoireShape {
+    Rect { width: f32, height: f32 },
+    Circle { radius: f32 },
+    Capsule { radius: f32, half_length: f32 },
+    Ellipse { half_size: Vec2 },
+    Polygon { vertex_groups: Vec<Vec<Vec2>> },
+}
+
+impl Default for GrimoireShape {
+    fn default() -> Self {
+        GrimoireShape::Circle { radius: 25. }
+    }
+}
+
+impl GrimoireShape {
+    fn ident(shape: GrimoireShape) -> GrimoireShape {
+        shape
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, Component)]
+pub struct GrimoirePosition {
+    pub x: f32,
+    pub y: f32,
+}
+
+impl GrimoirePosition {
+    fn new(x: f32, y: f32) -> Self {
+        Self { x, y }
+    }
+}
+
+impl Default for GrimoirePosition {
+    fn default() -> Self {
+        Self { x: 0., y: 0. }
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, Component)]
+pub struct GrimoireColor(pub Color);
+
+impl GrimoireColor {
+    fn new(color: Color) -> Self {
+        Self(color)
+    }
+}
+
+impl Default for GrimoireColor {
+    fn default() -> Self {
+        Self(Color::hsl(1., 1., 1.))
+    }
+}
+
+pub fn grimoire_drag(
+    drag: On<Pointer<Drag>>,
+    world_pos: Res<CursorWorldPos>,
+    mut query: Query<&mut GrimoirePosition, With<GrimoireDraggable>>,
+) {
+    if let Ok(mut position) = query.get_mut(drag.entity) {
+        if let Some(world_pos) = world_pos.0 {
+            position.x = world_pos.x;
+            position.y = world_pos.y;
         }
     }
 }

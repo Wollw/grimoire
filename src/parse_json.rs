@@ -18,16 +18,13 @@ fn _parse(input: &str) -> serde_json::Result<GrimoireObjectProps> {
     serde_json::from_str(input)
 }
 
-fn make_obj(mut commands: Commands, props: GrimoireObjectProps) {
-    let mesh = Circle::new(props.size).mesh().build();
-    let position = props.position;
-    let color = props.color;
+fn make_obj(mut commands: Commands, grim_obj: GrimoireObjectProps) {
     commands.spawn_scene(bsn! {
-        Mesh2d(asset_value(mesh))
         @GrimoireObject {
-            @name: {props.name}
-            @position: {props.position},
-            @color: {props.color},
+            @name: {grim_obj.name},
+            @color: {grim_obj.color},
+            @position: {grim_obj.position},
+            @shape: {grim_obj.shape}
         }
     });
 }
