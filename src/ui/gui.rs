@@ -1,6 +1,9 @@
 use crate::{
-    //actix_plugin::ServerState,
-    grimoire::components::{GrimoireObject, GrimoireRedraw, GrimoireShape},
+    grimoire::{
+        GrimoireColor, GrimoireObjectProps, GrimoirePosition,
+        components::{GrimoireObject, GrimoireRedraw, GrimoireShape},
+        parse_json::GrimoireSave,
+    },
     ui::toolbox::*,
 };
 use bevy::prelude::*;
@@ -40,7 +43,10 @@ pub fn gui_system(
         &mut Name,
         &mut GrimoireShape,
         &mut GrimoireRedraw,
+        &mut GrimoireColor,
+        &mut GrimoirePosition,
     )>,
+    mut commands: Commands,
 ) -> Result {
     let ctx = egui_contexts.ctx_mut()?;
     let mut viewport_ui = Ui::new(
@@ -54,8 +60,12 @@ pub fn gui_system(
     gui.toolbox_open = egui::CollapsingHeader::new("Toolbox")
         .show_background(true)
         .show(&mut viewport_ui, |ui| {
+            if ui.button("Save").clicked() {
+                commands.trigger(GrimoireSave);
+            }
+
             draw_toolbox(toolbox, ui);
-            for (_, mut n, mut shape, mut redraw) in query {
+            for (_, mut n, mut shape, mut redraw, color, position) in query {
                 let mut name = String::from(n.as_str());
                 egui::CollapsingHeader::new(n.as_str())
                     .default_open(true)

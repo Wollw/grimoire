@@ -1,6 +1,6 @@
 use crate::grimoire;
 use bevy::{color::palettes::basic::*, prelude::*};
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 #[derive(Component, Debug, Clone, Default)]
 struct NowDrawing;
@@ -35,6 +35,11 @@ impl GrimoireScene {
     }
 }
 
+fn serialize_color<S: Serializer>(color: &Color, serializer: S) -> Result<S::Ok, S::Error> {
+    let hex = Srgba::from(*color).to_hex();
+    <String>::serialize(&hex, serializer)
+}
+
 fn deserialize_color<'de, D>(deserializer: D) -> Result<Color, D::Error>
 where
     D: Deserializer<'de>,
@@ -56,7 +61,10 @@ pub struct GrimoireObject;
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GrimoireObjectProps {
     pub name: String,
-    #[serde(deserialize_with = "deserialize_color")]
+    #[serde(
+        serialize_with = "serialize_color",
+        deserialize_with = "deserialize_color"
+    )]
     pub color: Color,
     pub position: Vec3,
     pub shape: GrimoireShape,
@@ -80,7 +88,7 @@ impl GrimoireObject {
             Pickable
             GrimoireDraggable
             GrimoireShape::ident(props.shape)
-            GrimoirePosition::new(props.position.x,props.position.y)
+            GrimoirePosition::new(props.position.x,props.position.y, props.position.z)
             GrimoireColor::new(props.color)
             GrimoireRedraw::new(true)
             on(grimoire_drag)
@@ -115,17 +123,22 @@ impl GrimoireShape {
 pub struct GrimoirePosition {
     pub x: f32,
     pub y: f32,
+    pub z: f32,
 }
 
 impl GrimoirePosition {
-    fn new(x: f32, y: f32) -> Self {
-        Self { x, y }
+    fn new(x: f32, y: f32, z: f32) -> Self {
+        Self { x, y, z }
     }
 }
 
 impl Default for GrimoirePosition {
     fn default() -> Self {
-        Self { x: 0., y: 0. }
+        Self {
+            x: 0.,
+            y: 0.,
+            z: 0.,
+        }
     }
 }
 

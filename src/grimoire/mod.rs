@@ -31,6 +31,7 @@ impl Plugin for GrimoirePlugin {
         app.insert_resource(render::MeshHandleRes(None))
             .insert_resource(CursorWorldPos(None))
             .insert_resource(IsOverOrOut::Out)
-            .add_observer(draw::draw_new_shape);
+            .add_observer(draw::draw_new_shape)
+            .add_observer(parse_json::save);
     }
 }
