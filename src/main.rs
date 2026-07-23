@@ -18,6 +18,7 @@ use bevy::{
     window::PrimaryWindow,
 };
 use bevy_color::palettes::css::WHITE;
+use bevy_egui::input::EguiWantsInput;
 use bevy_hyper::*;
 use bevy_pancam::*;
 use egui::MouseWheelUnit;
@@ -39,6 +40,7 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(Update, get_cursor_world_pos)
         .add_systems(Update, render::grimoire_draw)
+        .add_systems(Update, disable_pancam_for_egui)
         .add_observer(parse_json::spawn_hyper_scene)
         .run();
 }
@@ -49,23 +51,14 @@ fn setup(mut commands: Commands) {
         move_keys: DirectionKeys::NONE,
         ..default()
     });
+}
 
-    commands.spawn_scene_list(bsn_list! {
-        @GrimoireObject {
-            @name: "foo",
-            @shape: GrimoireShape::Rect{width:50.,height:50.}
-        },
-        @GrimoireObject {
-            @name: "bar",
-            @color: WHITE,
-            @position: Vec3::new(-100.,50.,-1.),
-        },
-        @GrimoireObject {
-            @name: "baz",
-            @position: Vec3::new(100.,0.,1.),
-        }
-
-    });
+fn disable_pancam_for_egui(egui_wants_input: Res<EguiWantsInput>, mut pancam: Single<&mut PanCam>) {
+    if egui_wants_input.wants_pointer_input() {
+        pancam.enabled = false;
+    } else {
+        pancam.enabled = true;
+    }
 }
 
 fn get_cursor_world_pos(

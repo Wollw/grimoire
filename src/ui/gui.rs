@@ -39,6 +39,7 @@ pub fn gui_system(
     mut toolbox: ResMut<Toolbox>,
     //server_state: Res<State<ServerState>>,
     mut query: Query<(
+        Entity,
         &GrimoireObject,
         &mut Name,
         &mut GrimoireShape,
@@ -57,26 +58,23 @@ pub fn gui_system(
             .max_rect(ctx.viewport_rect()),
     );
 
-    gui.toolbox_open = egui::CollapsingHeader::new("Toolbox")
-        .show_background(true)
-        .show(&mut viewport_ui, |ui| {
-            if ui.button("Save").clicked() {
-                commands.trigger(GrimoireSave);
-            }
+    egui::Window::new("Toolbox").scroll(true).show(ctx, |ui| {
+        if ui.button("Save").clicked() {
+            commands.trigger(GrimoireSave);
+        }
 
-            draw_toolbox(toolbox, ui);
-            for (_, mut n, mut shape, mut redraw, color, position) in query {
-                let mut name = String::from(n.as_str());
-                egui::CollapsingHeader::new(n.as_str())
-                    .default_open(true)
-                    .show(ui, |ui| {
-                        ui.add(egui::TextEdit::singleline(&mut name));
-                        *shape = shape_change(ui, shape.clone(), &mut redraw)
-                    });
-                n.set(name);
-            }
-        })
-        .fully_open();
+        draw_toolbox(toolbox, ui);
+        for (entity, _, mut n, mut shape, mut redraw, color, position) in query {
+            let mut name = String::from(n.as_str());
+            egui::CollapsingHeader::new(entity.to_string())
+                .default_open(false)
+                .show(ui, |ui| {
+                    ui.add(egui::TextEdit::singleline(&mut name));
+                    *shape = shape_change(ui, shape.clone(), &mut redraw)
+                });
+            n.set(name);
+        }
+    });
 
     Ok(())
 }

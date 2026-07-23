@@ -3,6 +3,7 @@ use crate::{
     ui::toolbox::*,
 };
 use bevy::prelude::*;
+use bevy_egui::{input::EguiWantsInput, prelude::*};
 
 pub fn draw_new_shape(
     click: On<Pointer<Click>>,
@@ -10,7 +11,11 @@ pub fn draw_new_shape(
     is_over_out: Res<grimoire::IsOverOrOut>,
     toolbox: Res<Toolbox>,
     mut commands: Commands,
+    egui_wants_input: Res<EguiWantsInput>,
 ) {
+    if egui_wants_input.wants_any_pointer_input() {
+        return;
+    }
     if *is_over_out == IsOverOrOut::Over {
         return;
     }
