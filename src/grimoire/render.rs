@@ -24,9 +24,11 @@ pub fn grimoire_draw(
     for (shape, GrimoireColor(color), position, entity, name, mut redraw) in &mut query {
         let rd = redraw.0;
         if !rd {
-            commands
-                .entity(entity)
-                .insert(Transform::from_xyz((*position).x, (*position).y, 0.));
+            commands.entity(entity).insert(Transform::from_xyz(
+                (*position).x,
+                (*position).y,
+                (*position).z,
+            ));
         } else {
             info!("(Re)drawing {}", name);
             if let Some(mesh) = build_mesh(shape) {
@@ -38,7 +40,7 @@ pub fn grimoire_draw(
                 commands.entity(entity).insert(Transform::from_xyz(
                     (*position).x,
                     (*position).y,
-                    0.,
+                    (*position).z,
                 ));
             }
             *redraw = GrimoireRedraw::new(false);

@@ -1,4 +1,4 @@
-use crate::grimoire::components::*;
+use crate::grimoire::{GrimoireMarkRemoveNamed, components::*};
 use bevy::prelude::*;
 use bevy_hyper::*;
 use serde::*;
@@ -7,13 +7,13 @@ use serde_json::{Result, *};
 #[derive(Event)]
 pub struct GrimoireSave;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct GrimoireCamera {
     scale: f32,
     position: Vec3,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GrimoireSaveFormat {
     camera: Option<GrimoireCamera>,
     objects: Vec<GrimoireObjectProps>,
@@ -35,6 +35,9 @@ pub fn spawn_hyper_scene(
             if let Some(camera) = save.camera {
                 transform.translation = camera.position;
                 perspective.scale = camera.scale;
+            }
+            for obj in save.objects.clone() {
+                commands.trigger(GrimoireMarkRemoveNamed(obj.name.clone()));
             }
             for obj in save.objects {
                 commands.spawn_scene(make_scene(obj));

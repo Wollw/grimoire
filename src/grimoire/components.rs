@@ -11,30 +11,6 @@ pub struct GrimoireVisible;
 #[derive(Clone, Default, Component, Debug)]
 pub struct GrimoireDraggable;
 
-#[derive(Debug, Clone, Default, SceneComponent)]
-#[scene(GrimoireSceneProps)]
-#[derive(Reflect)]
-#[reflect(Component, Clone, Default)]
-pub struct GrimoireScene;
-pub struct GrimoireSceneProps {
-    pub background_color: Color,
-}
-impl Default for GrimoireSceneProps {
-    fn default() -> Self {
-        Self {
-            background_color: Color::BLACK,
-        }
-    }
-}
-
-impl GrimoireScene {
-    fn scene(props: GrimoireSceneProps) -> impl Scene {
-        bsn! {
-            Camera2d
-        }
-    }
-}
-
 fn serialize_color<S: Serializer>(color: &Color, serializer: S) -> Result<S::Ok, S::Error> {
     let hex = Srgba::from(*color).to_hex();
     <String>::serialize(&hex, serializer)
@@ -58,7 +34,7 @@ where
 #[scene(GrimoireObjectProps)]
 pub struct GrimoireObject;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct GrimoireObjectProps {
     pub name: String,
     #[serde(

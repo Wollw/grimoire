@@ -1,11 +1,14 @@
+use std::range::RangeInclusive;
+
 use crate::{
     grimoire::{
-        GrimoireColor, GrimoireObjectProps, GrimoirePosition,
+        GrimoireClear, GrimoireColor, GrimoireObjectProps, GrimoirePosition,
         components::{GrimoireObject, GrimoireRedraw, GrimoireShape},
         parse_json::GrimoireSave,
     },
-    ui::toolbox::*,
+    ui::{IsWindowFocused, color32_to_grim_color, grim_color_to_color32, toolbox::*},
 };
+use bevy::color::{palettes::basic::*, prelude::*};
 use bevy::prelude::*;
 use bevy_egui::{
     EguiContexts, EguiPlugin, EguiPrimaryContextPass,
@@ -28,7 +31,7 @@ pub struct Gui {
     toolbox_open: bool,
 }
 
-fn setup_gui(mut commands: Commands, mut egui_contexts: EguiContexts) {
+fn setup_gui(mut commands: Commands) {
     commands.insert_resource(Gui { toolbox_open: true });
 }
 
@@ -37,6 +40,7 @@ pub fn gui_system(
     mut camera: Query<&mut Transform, With<Camera>>,
     mut gui: ResMut<Gui>,
     mut toolbox: ResMut<Toolbox>,
+    window_focused: Res<IsWindowFocused>,
     //server_state: Res<State<ServerState>>,
     mut query: Query<(
         Entity,
@@ -49,28 +53,42 @@ pub fn gui_system(
     )>,
     mut commands: Commands,
 ) -> Result {
+    let IsWindowFocused(focused) = *window_focused;
+    if !focused {
+        return Ok(());
+    }
+
     let ctx = egui_contexts.ctx_mut()?;
-    let mut viewport_ui = Ui::new(
-        ctx.clone(),
-        "viewport".into(),
-        UiBuilder::new()
-            .layer_id(LayerId::background())
-            .max_rect(ctx.viewport_rect()),
-    );
 
     egui::Window::new("Toolbox").scroll(true).show(ctx, |ui| {
         if ui.button("Save").clicked() {
             commands.trigger(GrimoireSave);
         }
+        if ui.button("Clear").clicked() {
+            commands.trigger(GrimoireClear);
+        }
 
         draw_toolbox(toolbox, ui);
-        for (entity, _, mut n, mut shape, mut redraw, color, position) in query {
+        for (entity, _, mut n, mut shape, mut redraw, mut color, mut position) in query {
             let mut name = String::from(n.as_str());
             egui::CollapsingHeader::new(entity.to_string())
                 .default_open(false)
                 .show(ui, |ui| {
                     ui.add(egui::TextEdit::singleline(&mut name));
-                    *shape = shape_change(ui, shape.clone(), &mut redraw)
+                    (*shape, *redraw) = shape_change(ui, shape.clone());
+                    let mut rgba = grim_color_to_color32(color.clone());
+                    if ui.color_edit_button_srgba(&mut rgba).changed() {
+                        *redraw = GrimoireRedraw(true);
+                        *color = color32_to_grim_color(rgba);
+                    }
+                    let mut z_index = position.z as u32;
+                    if ui
+                        .add(egui::Slider::new(&mut z_index, 1..=100).text("z-index"))
+                        .changed()
+                    {
+                        *redraw = GrimoireRedraw(true);
+                        position.z = z_index as f32;
+                    }
                 });
             n.set(name);
         }

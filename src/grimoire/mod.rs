@@ -1,13 +1,8 @@
 use bevy::color::palettes::css::*;
-use bevy::dev_tools::infinite_grid::*;
-use bevy::pbr::StandardMaterialUniform;
 use bevy::prelude::*;
 use bevy::reflect::array::Array;
 use bevy::sprite_render::*;
-use bevy_color;
 use bevy_pancam::*;
-use bevy_prototype_lyon::prelude::tess::geom::arrayvec::ArrayVec;
-use bevy_prototype_lyon::prelude::tess::path::Position;
 use bevy_scene::prelude::*;
 use bevy_scene::{ResolveContext, ResolveSceneError, ResolvedScene};
 use serde;
@@ -32,6 +27,47 @@ impl Plugin for GrimoirePlugin {
             .insert_resource(CursorWorldPos(None))
             .insert_resource(IsOverOrOut::Out)
             .add_observer(draw::draw_new_shape)
-            .add_observer(parse_json::save);
+            .add_observer(parse_json::save)
+            .add_observer(clear_named)
+            .add_observer(clear)
+            .add_systems(Update, remove_marked);
+    }
+}
+
+#[derive(Event)]
+pub struct GrimoireClear;
+
+pub fn clear(
+    _event: On<GrimoireClear>,
+    mut commands: Commands,
+    query: Query<Entity, With<GrimoireObject>>,
+) {
+    for entity in query {
+        commands.entity(entity).despawn();
+    }
+}
+
+#[derive(Event, Debug)]
+pub struct GrimoireMarkRemoveNamed(String);
+
+#[derive(Component, Debug)]
+pub struct GrimoireRemove;
+
+pub fn clear_named(
+    clear_named: On<GrimoireMarkRemoveNamed>,
+    mut commands: Commands,
+    query: Query<(Entity, &Name), With<GrimoireObject>>,
+) {
+    let name = (*clear_named).0.to_string();
+    for (entity, entity_name) in query.clone() {
+        if entity_name.as_str() == name.as_str() {
+            commands.entity(entity).insert(GrimoireRemove);
+        }
+    }
+}
+
+fn remove_marked(query: Query<Entity, With<GrimoireRemove>>, mut commands: Commands) {
+    for entity in query {
+        commands.entity(entity).despawn();
     }
 }

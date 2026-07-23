@@ -36,11 +36,7 @@ pub fn draw_toolbox(mut toolbox: ResMut<Toolbox>, ui: &mut Ui) {
     ui.radio_value(&mut toolbox.tool, Tools::Rectangle, "Rect");
 }
 
-pub fn shape_change(
-    ui: &mut Ui,
-    shape: GrimoireShape,
-    mut redraw: &mut GrimoireRedraw,
-) -> GrimoireShape {
+pub fn shape_change(ui: &mut Ui, shape: GrimoireShape) -> (GrimoireShape, GrimoireRedraw) {
     let mut shape_type = match shape {
         GrimoireShape::Circle { radius: _radius } => Tools::Circle,
         GrimoireShape::Rect {
@@ -54,18 +50,19 @@ pub fn shape_change(
         .radio_value(&mut shape_type, Tools::Circle, "Circle")
         .clicked()
     {
-        redraw.0 = true;
-        return GrimoireShape::Circle { radius: 30. };
+        return (GrimoireShape::Circle { radius: 30. }, GrimoireRedraw(true));
     }
     if ui
         .radio_value(&mut shape_type, Tools::Rectangle, "Rect")
         .clicked()
     {
-        redraw.0 = true;
-        return GrimoireShape::Rect {
-            width: 20.,
-            height: 20.,
-        };
+        return (
+            GrimoireShape::Rect {
+                width: 20.,
+                height: 20.,
+            },
+            GrimoireRedraw(true),
+        );
     }
-    return shape;
+    return (shape, GrimoireRedraw(false));
 }

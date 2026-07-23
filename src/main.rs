@@ -1,24 +1,26 @@
 mod grimoire;
+mod input;
 mod ui;
 use crate::grimoire::*;
+use crate::input::*;
 use crate::ui::*;
 
-use bevy::dev_tools::infinite_grid::*;
 use bevy::input::mouse::{AccumulatedMouseScroll, MouseWheel};
 use bevy::reflect::DynamicTyped;
+use bevy::window::WindowMode::BorderlessFullscreen;
 use bevy::{
     app::AppLabel,
     camera::{Projection, Viewport},
     ecs::schedule::*,
     picking::pointer::PointerInteraction,
     prelude::*,
-    sprite_render::Wireframe2dConfig,
     state::*,
     tasks::IoTaskPool,
-    window::PrimaryWindow,
+    window::{PrimaryWindow, WindowMode},
 };
 use bevy_color::palettes::css::WHITE;
 use bevy_egui::input::EguiWantsInput;
+use bevy_enhanced_input::prelude::*;
 use bevy_hyper::*;
 use bevy_pancam::*;
 use egui::MouseWheelUnit;
@@ -32,17 +34,20 @@ use std::ops::Deref;
 fn main() {
     info!("Starting Application");
 
-    App::new()
-        .add_plugins((DefaultPlugins, MeshPickingPlugin, PanCamPlugin::default()))
-        .add_plugins(GrimoirePlugin)
-        .add_plugins(InterfacePlugin)
-        .add_plugins(HyperPlugin::default())
+    let mut app = App::new();
+    app.add_plugins((DefaultPlugins, MeshPickingPlugin, PanCamPlugin::default()))
+        .add_plugins((
+            GrimoirePlugin,
+            GrimoireInterfacePlugin,
+            GrimoireInputPlugin,
+            HyperPlugin::default(),
+        ))
         .add_systems(Startup, setup)
         .add_systems(Update, get_cursor_world_pos)
         .add_systems(Update, render::grimoire_draw)
         .add_systems(Update, disable_pancam_for_egui)
-        .add_observer(parse_json::spawn_hyper_scene)
-        .run();
+        .add_observer(parse_json::spawn_hyper_scene);
+    app.run();
 }
 
 fn setup(mut commands: Commands) {
